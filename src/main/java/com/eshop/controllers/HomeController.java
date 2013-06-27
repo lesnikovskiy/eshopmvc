@@ -1,0 +1,101 @@
+package com.eshop.controllers;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.eshop.domain.Category;
+import com.eshop.domain.Product;
+import com.eshop.service.CategoryService;
+import com.eshop.service.ProductService;
+
+@Controller
+public class HomeController {
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private CategoryService categoryService;
+	
+	@RequestMapping("/")
+	public String main() {
+		return "redirect:/index";
+	}
+	
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	public String home(Map<String, Object> map) {
+		map.put("products", productService.list());
+		
+		return "home";
+	}	
+	
+	@RequestMapping(value="/download/{productId}")
+	public String downloadFile(@PathVariable("productId") Integer productId, HttpServletResponse response) {
+		Product product = productService.get(productId);
+		
+		if (product != null) {
+			try {
+				OutputStream outputStream = response.getOutputStream();
+				response.setContentType(product.getMime());
+				
+				IOUtils.copy(product.getFile().getBinaryStream(), outputStream);
+				
+				outputStream.flush();
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(Map<String, Object> map) {
+		map.put("product", new Product());
+		map.put("categories", categoryService.list());
+		
+		return "edit";
+	}
+	
+	@RequestMapping(value="/save", method = RequestMethod.POST)
+	public String save(@ModelAttribute("product") Product product, BindingResult result, 
+			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {		
+		try {
+			Blob fileBlob = Hibernate.createBlob(file.getInputStream());
+			Category category = categoryService.get(categoryId);
+			
+			product.setMime(file.getContentType());
+			product.setFile(fileBlob);
+			product.setCategory(category);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			productService.add(product);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "redirect:/index";
+	}
+}
