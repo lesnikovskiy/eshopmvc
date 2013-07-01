@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -82,6 +83,25 @@ public class HomeController {
 	public String edit(Map<String, Object> map) {
 		map.put("product", new Product());
 		map.put("categories", categoryService.list());
+		
+		return "edit";
+	}
+	
+	@RequestMapping("/edit/{productId}")
+	public String editProduct(@PathVariable("productId") Integer productId, 
+			Map<String, Object> map) {
+		Product product = productService.get(productId);
+		List<Category> categories = categoryService.list();
+		
+		if (product != null) {
+			for (Category c : categories) {
+				if (product.getCategory().getShortName().equals(c.getShortName()))
+					c.setSelected(true);
+			}
+		}
+		
+		map.put("product", product);
+		map.put("categories", categories);
 		
 		return "edit";
 	}

@@ -29,7 +29,14 @@
 				<form:label path="category">Category:</form:label>
 				<form:select path="category">
 					<c:forEach var="cat" items="${categories}">
-						<form:option value="${cat.id}">${cat.name}</form:option>
+						<c:choose>
+							<c:when test="${c.selected}">
+								<form:option value="${cat.id}" selected="selected">${cat.name}</form:option>
+							</c:when>
+							<c:otherwise>
+								<form:option value="${cat.id}">${cat.name}</form:option>
+							</c:otherwise>
+						</c:choose>						
 					</c:forEach>
 				</form:select>
 				<form:label path="file">Select product image:</form:label>

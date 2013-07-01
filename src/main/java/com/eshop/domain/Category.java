@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="categories")
@@ -22,6 +23,9 @@ public class Category {
 	
 	@Column(name="logicalorder")
 	private int logicalOrder;
+	
+	@Transient	
+	private boolean selected;
 
 	public int getId() {
 		return id;
@@ -53,5 +57,13 @@ public class Category {
 
 	public void setLogicalOrder(int logicalOrder) {
 		this.logicalOrder = logicalOrder;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 }
