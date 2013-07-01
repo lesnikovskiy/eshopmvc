@@ -28,15 +28,15 @@
 		</div>
 		<div class="aside">
 			<p class="cart-summary">
-<%-- 				<c:choose> --%>
-<%-- 					<c:when test="${empty sessionScope.products_session_key}"> --%>
-<!-- 						Shopping cart is empty. -->
-<%-- 					</c:when> --%>
-<%-- 					<c:otherwise> --%>
-<%-- 						You've got <b>${sessionScope.products_session_key.cartLines.size()}</b> item(s) in your  --%>
-<!-- 							<a href="products?action=cart" class="checkout">shopping cart</a> -->
-<%-- 					</c:otherwise> --%>
-<%-- 				</c:choose>			 --%>
+				<c:choose>
+					<c:when test="${empty shoppingCart.cartLines}">
+						Shopping cart is empty.
+					</c:when>
+					<c:otherwise>
+						You've got <b>${shoppingCart.cartLines.size()}</b> item(s) in your 
+							<a href="${pageContext.request.contextPath}/cart" class="checkout">shopping cart</a>
+					</c:otherwise>
+				</c:choose>			
 			</p>
 		</div>
 		<div class="clear"></div>
@@ -61,13 +61,12 @@
 							</p>					
 							<p>${product.name}</p>
 							<p>Price: $${product.price}</p>
-							<p><a href="products?action=edit&id=${product.id}">[edit]</a></p>
+							<p><a href="${pageContext.request.contextPath}/edit/${product.id}">[edit]</a></p>
 						</div>
 						<div class="buttons">
 							<div>
-								<form method="post" action="products">
-									<input type="hidden" name="action" value="addToCart" />
-									<input type="hidden" name="id4cart" value="${product.id}" />
+								<form method="post" action="${pageContext.request.contextPath}/addtocart">
+									<input type="hidden" name="productid" value="${product.id}" />
 									<input type="submit" value="add to cart" class="cart-button" />
 								</form>
 							</div>

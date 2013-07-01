@@ -18,14 +18,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.eshop.domain.CartLine;
 import com.eshop.domain.Category;
 import com.eshop.domain.Product;
+import com.eshop.domain.ShoppingCart;
 import com.eshop.service.CategoryService;
 import com.eshop.service.ProductService;
 
 @Controller
+@SessionAttributes("shoppingCart")
 public class HomeController {
 	@Autowired
 	private ProductService productService;
@@ -33,14 +37,20 @@ public class HomeController {
 	@Autowired
 	private CategoryService categoryService;
 	
+	@ModelAttribute("shoppingCart")
+	public ShoppingCart initShoppingCart() {
+		return new ShoppingCart();
+	}
+	
 	@RequestMapping("/")
 	public String main() {
 		return "redirect:/index";
 	}
 	
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String home(Map<String, Object> map) {
+	public String home(Map<String, Object> map, @ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {			
 		map.put("products", productService.list());
+		map.put("shoppingCart",  shoppingCart != null ? shoppingCart : initShoppingCart());
 		
 		return "home";
 	}	
@@ -97,5 +107,26 @@ public class HomeController {
 		}
 		
 		return "redirect:/index";
+	}
+	
+	@RequestMapping(value="/addtocart", method=RequestMethod.POST)
+	public String addToCart(@RequestParam("productid") Integer productId, 
+			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {		
+		Product product = productService.get(productId);
+		if (product != null) {
+			CartLine line = new CartLine();
+			line.setProduct(product);
+			line.setQuantity(1);
+			shoppingCart.add(line);
+		}
+		
+		return "redirect:/index";
+	}
+	
+	@RequestMapping("/cart")
+	public String cart(Map<String, Object> map, @ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {
+		map.put("shoppingCart", shoppingCart);
+		
+		return "cart";
 	}
 }
