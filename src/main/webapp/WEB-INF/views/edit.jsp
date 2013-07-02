@@ -21,7 +21,8 @@
 		<fieldset>
 			<legend>Fill out fields</legend>
 			<form:form commandName="product" id="edit-product-form" method="post" enctype="multipart/form-data" 
-				action="${pageContext.request.contextPath}/save">				
+				action="${pageContext.request.contextPath}/${action}">	
+				<form:input path="id" type="hidden" />
 				<form:label path="name">Product name:</form:label>
 				<form:input path="name" />				
 				<form:label path="price">Price:</form:label>

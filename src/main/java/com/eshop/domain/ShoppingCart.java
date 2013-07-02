@@ -3,6 +3,7 @@ package com.eshop.domain;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ShoppingCart {
@@ -29,7 +30,7 @@ public class ShoppingCart {
 		return totalPrice;
 	}
 	
-	public void add(CartLine cartLine) {
+	public void add(CartLine cartLine) {		
 		List<CartLine> cartLines = getCartLines();
 		if (cartLines == null)
 			cartLines = new ArrayList<CartLine>();
@@ -53,16 +54,23 @@ public class ShoppingCart {
 		if (cartLines == null)
 			return;
 		
-		for (CartLine line : cartLines) {
-			if (line.getProduct().getName().equals(cartLine.getProduct().getName()))
-				cartLines.remove(line);
+		Iterator<CartLine> iterator = cartLines.iterator();
+		while(iterator.hasNext()) {
+			CartLine line = iterator.next();
+			if (line.getProduct().getName().equals(cartLine.getProduct().getName())) {
+				iterator.remove();
+			}
 		}
 		
 		setCartLines(cartLines);
 	}
 	
 	public void clear() {
+		List<CartLine> cartLines = getCartLines();
+		
 		if (cartLines != null)
 			cartLines.clear();
+		
+		setCartLines(cartLines);
 	}
 }

@@ -83,6 +83,7 @@ public class HomeController {
 	public String edit(Map<String, Object> map) {
 		map.put("product", new Product());
 		map.put("categories", categoryService.list());
+		map.put("action", "save");
 		
 		return "edit";
 	}
@@ -102,6 +103,7 @@ public class HomeController {
 		
 		map.put("product", product);
 		map.put("categories", categories);
+		map.put("action", "update");
 		
 		return "edit";
 	}
@@ -109,19 +111,24 @@ public class HomeController {
 	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public String save(@ModelAttribute("product") Product product, BindingResult result, 
 			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {		
+		Product p = initProduct(product, file, categoryId);
+		
 		try {
-			Blob fileBlob = Hibernate.createBlob(file.getInputStream());
-			Category category = categoryService.get(categoryId);
-			
-			product.setMime(file.getContentType());
-			product.setFile(fileBlob);
-			product.setCategory(category);
-		} catch (IOException e) {
+			productService.add(p);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+		return "redirect:/index";
+	}	
+	
+	@RequestMapping(value="update", method = RequestMethod.POST)
+	public String update(@ModelAttribute("product") Product product, BindingResult result,
+			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {
+		Product p = initProduct(product, file, categoryId);
+		
 		try {
-			productService.add(product);
+			productService.update(p);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -148,5 +155,32 @@ public class HomeController {
 		map.put("shoppingCart", shoppingCart);
 		
 		return "cart";
+	}
+	
+	private Product initProduct(Product product, MultipartFile file, Integer categoryId) {
+		Category category = categoryService.get(categoryId);
+		if (category != null)
+			product.setCategory(category);
+		
+		try {
+			if (file != null && file.getInputStream().available() > 0) {
+				Blob fileBlob = Hibernate.createBlob(file.getInputStream());
+				
+				product.setMime(file.getContentType());
+				product.setFile(fileBlob);
+			} else {
+				if (product.getId() > 0) {
+					Product p = productService.get(product.getId());
+					if (p != null) {
+						product.setMime(p.getMime());
+						product.setFile(p.getFile());
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return product;
 	}
 }
