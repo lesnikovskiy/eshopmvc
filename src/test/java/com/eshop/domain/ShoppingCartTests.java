@@ -146,6 +146,124 @@ public class ShoppingCartTests {
 		Assert.assertEquals(cart.getCartLines().size(), 0);
 	}
 	
+	@Test
+	public void findLineByProductNameTest() {
+		// arrange
+		Product p1 = new Product();
+		p1.setName("Pro Spring 3");
+		
+		CartLine line = new CartLine();
+		line.setProduct(p1);
+		line.setQuantity(1);
+		
+		Product p2 = new Product();
+		p2.setName("Pro ASP.NET MVC 4");
+		
+		CartLine line2 = new CartLine();
+		line2.setProduct(p2);
+		line2.setQuantity(3);
+		
+		ShoppingCart cart = new ShoppingCart();
+		cart.add(line);
+		cart.add(line2);
+		
+		// act
+		CartLine fline = cart.find("Pro ASP.NET MVC 4");
+		
+		// assert
+		Assert.assertNotNull(fline);
+		Assert.assertNotNull(fline.getProduct());
+		Assert.assertEquals(fline.getProduct().getName(), "Pro ASP.NET MVC 4");
+		Assert.assertEquals(fline.getQuantity(), 3);
+	}
+	
+	@Test
+	public void incrementLineIncreasesQuantityByOne() {
+		// arrange
+		Product p1 = new Product();
+		p1.setName("Pro Spring 3");
+		
+		CartLine line = new CartLine();
+		line.setProduct(p1);
+		line.setQuantity(1);
+		
+		Product p2 = new Product();
+		p2.setName("Pro ASP.NET MVC 4");
+		
+		CartLine line2 = new CartLine();
+		line2.setProduct(p2);
+		line2.setQuantity(3);
+		
+		ShoppingCart cart = new ShoppingCart();
+		cart.add(line);
+		cart.add(line2);
+		
+		// act
+		cart.increment("Pro Spring 3");
+		
+		// assert
+		Assert.assertEquals(cart.getCartLines().get(0).getQuantity(), 2);
+		Assert.assertEquals(cart.getCartLines().get(1).getQuantity(), 3);
+	}
+	
+	@Test
+	public void decrementLineDecreasesQuantityByOne() {
+		// arrange
+		Product p1 = new Product();
+		p1.setName("Pro Spring 3");
+		
+		CartLine line = new CartLine();
+		line.setProduct(p1);
+		line.setQuantity(2);
+		
+		Product p2 = new Product();
+		p2.setName("Pro ASP.NET MVC 4");
+		
+		CartLine line2 = new CartLine();
+		line2.setProduct(p2);
+		line2.setQuantity(3);
+		
+		ShoppingCart cart = new ShoppingCart();
+		cart.add(line);
+		cart.add(line2);
+		
+		// act
+		cart.decrement("Pro Spring 3");
+		
+		// assert
+		Assert.assertEquals(cart.getCartLines().get(0).getQuantity(), 1);
+		Assert.assertEquals(cart.getCartLines().get(1).getQuantity(), 3);
+	}
+	
+	@Test
+	public void decrementLineCannotSetZeroOrNegativeQuantity() {
+		// arrange
+		Product p1 = new Product();
+		p1.setName("Pro Spring 3");
+		
+		CartLine line = new CartLine();
+		line.setProduct(p1);
+		line.setQuantity(1);
+		
+		Product p2 = new Product();
+		p2.setName("Pro ASP.NET MVC 4");
+		
+		CartLine line2 = new CartLine();
+		line2.setProduct(p2);
+		line2.setQuantity(3);
+		
+		ShoppingCart cart = new ShoppingCart();
+		cart.add(line);
+		cart.add(line2);
+		
+		// act
+		cart.decrement("Pro Spring 3");
+		
+		// assert
+		Assert.assertEquals(cart.getCartLines().get(0).getQuantity(), 1);
+		Assert.assertEquals(cart.getCartLines().get(1).getQuantity(), 3);
+	}
+	
 	private BigDecimal convertToBigDecimal(double num) {
 		return new BigDecimal(BigInteger.ZERO, 2).add(new BigDecimal(num));
 	}

@@ -40,6 +40,7 @@ public class ShoppingCart {
 			if (line.getProduct().getName().equals(cartLine.getProduct().getName())) {
 				found = true;
 				line.setQuantity(line.getQuantity() + 1);
+				break;
 			}
 		}
 		
@@ -59,6 +60,7 @@ public class ShoppingCart {
 			CartLine line = iterator.next();
 			if (line.getProduct().getName().equals(cartLine.getProduct().getName())) {
 				iterator.remove();
+				break;
 			}
 		}
 		
@@ -72,5 +74,43 @@ public class ShoppingCart {
 			cartLines.clear();
 		
 		setCartLines(cartLines);
+	}
+	
+	public CartLine find(String productName) {
+		CartLine line = null;
+		
+		List<CartLine> cartLines = getCartLines();
+		for (CartLine l : cartLines) {
+			if (l.getProduct() != null && l.getProduct().getName().equals(productName)) {
+				line = l;
+				break;
+			}
+		}		
+		
+		return line;
+	}
+	
+	public void increment(String productName) {
+		Iterator<CartLine> iterator = getCartLines().iterator();
+		while(iterator.hasNext()) {
+			CartLine line = iterator.next();
+			if (line.getProduct().getName().equals(productName)) {
+				line.setQuantity(line.getQuantity() + 1);
+				break;
+			}				
+		}
+	}
+	
+	public void decrement(String productName) {
+		Iterator<CartLine> iterator = getCartLines().iterator();
+		while(iterator.hasNext()) {
+			CartLine line = iterator.next();
+			if (line.getProduct().getName().equals(productName)) {
+				int quantity = line.getQuantity();
+				int qty = quantity > 1 ? quantity - 1 : 1;
+				line.setQuantity(qty);
+				break;
+			}				
+		}
 	}
 }
