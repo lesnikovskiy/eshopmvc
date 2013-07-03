@@ -20,9 +20,8 @@ public class ProductDAOImpl implements ProductDAO {
 		Session session = sessionFactory.getCurrentSession();
 		List<Product> products = null;
 		try {
-//			products = (List<Product>) session.createQuery("from Product where isdeleted!=:isdeleted")
-//					.setBoolean("isdeleted", true).list();
-			products = (List<Product>) session.createQuery("from Product").list();
+			products = (List<Product>) session.createQuery("from Product where isdeleted!=:isdeleted")
+					.setBoolean("isdeleted", true).list();
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		}

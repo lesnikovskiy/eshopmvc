@@ -30,6 +30,7 @@ import com.eshop.service.CategoryService;
 import com.eshop.service.ProductService;
 
 @Controller
+@RequestMapping("/")
 @SessionAttributes("shoppingCart")
 public class HomeController {
 	@Autowired
@@ -79,62 +80,62 @@ public class HomeController {
 		return null;
 	}
 	
-	@RequestMapping("/edit")
-	public String edit(Map<String, Object> map) {
-		map.put("product", new Product());
-		map.put("categories", categoryService.list());
-		map.put("action", "save");
-		
-		return "edit";
-	}
+//	@RequestMapping("/edit")
+//	public String edit(Map<String, Object> map) {
+//		map.put("product", new Product());
+//		map.put("categories", categoryService.list());
+//		map.put("action", "save");
+//		
+//		return "edit";
+//	}
 	
-	@RequestMapping("/edit/{productId}")
-	public String editProduct(@PathVariable("productId") Integer productId, 
-			Map<String, Object> map) {
-		Product product = productService.get(productId);
-		List<Category> categories = categoryService.list();
-		
-		if (product != null) {
-			for (Category c : categories) {
-				if (product.getCategory().getShortName().equals(c.getShortName()))
-					c.setSelected(true);
-			}
-		}
-		
-		map.put("product", product);
-		map.put("categories", categories);
-		map.put("action", "update");
-		
-		return "edit";
-	}
+//	@RequestMapping("/edit/{productId}")
+//	public String editProduct(@PathVariable("productId") Integer productId, 
+//			Map<String, Object> map) {
+//		Product product = productService.get(productId);
+//		List<Category> categories = categoryService.list();
+//		
+//		if (product != null) {
+//			for (Category c : categories) {
+//				if (product.getCategory().getShortName().equals(c.getShortName()))
+//					c.setSelected(true);
+//			}
+//		}
+//		
+//		map.put("product", product);
+//		map.put("categories", categories);
+//		map.put("action", "update");
+//		
+//		return "edit";
+//	}
 	
-	@RequestMapping(value="/save", method = RequestMethod.POST)
-	public String save(@ModelAttribute("product") Product product, BindingResult result, 
-			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {		
-		Product p = initProduct(product, file, categoryId);
-		
-		try {
-			productService.add(p);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "redirect:/index";
-	}	
-	
-	@RequestMapping(value="update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("product") Product product, BindingResult result,
-			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {
-		Product p = initProduct(product, file, categoryId);
-		
-		try {
-			productService.update(p);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "redirect:/index";
-	}
+//	@RequestMapping(value="/save", method = RequestMethod.POST)
+//	public String save(@ModelAttribute("product") Product product, BindingResult result, 
+//			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {		
+//		Product p = initProduct(product, file, categoryId);
+//		
+//		try {
+//			productService.add(p);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return "redirect:/index";
+//	}	
+//	
+//	@RequestMapping(value="update", method = RequestMethod.POST)
+//	public String update(@ModelAttribute("product") Product product, BindingResult result,
+//			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {
+//		Product p = initProduct(product, file, categoryId);
+//		
+//		try {
+//			productService.update(p);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return "redirect:/index";
+//	}
 	
 	@RequestMapping(value="/addtocart", method=RequestMethod.POST)
 	public String addToCart(@RequestParam("productid") Integer productId, 
@@ -157,30 +158,30 @@ public class HomeController {
 		return "cart";
 	}
 	
-	private Product initProduct(Product product, MultipartFile file, Integer categoryId) {
-		Category category = categoryService.get(categoryId);
-		if (category != null)
-			product.setCategory(category);
-		
-		try {
-			if (file != null && file.getInputStream().available() > 0) {
-				Blob fileBlob = Hibernate.createBlob(file.getInputStream());
-				
-				product.setMime(file.getContentType());
-				product.setFile(fileBlob);
-			} else {
-				if (product.getId() > 0) {
-					Product p = productService.get(product.getId());
-					if (p != null) {
-						product.setMime(p.getMime());
-						product.setFile(p.getFile());
-					}
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return product;
-	}
+//	private Product initProduct(Product product, MultipartFile file, Integer categoryId) {
+//		Category category = categoryService.get(categoryId);
+//		if (category != null)
+//			product.setCategory(category);
+//		
+//		try {
+//			if (file != null && file.getInputStream().available() > 0) {
+//				Blob fileBlob = Hibernate.createBlob(file.getInputStream());
+//				
+//				product.setMime(file.getContentType());
+//				product.setFile(fileBlob);
+//			} else {
+//				if (product.getId() > 0) {
+//					Product p = productService.get(product.getId());
+//					if (p != null) {
+//						product.setMime(p.getMime());
+//						product.setFile(p.getFile());
+//					}
+//				}
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return product;
+//	}
 }

@@ -7,7 +7,11 @@
 	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 	<http auto-config="true">
-		<intercept-url pattern="/**" access="ROLE_USER" />
+		<intercept-url pattern="/account/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />	
+		<intercept-url pattern="/admin/**" access="ROLE_USER" />	
+		<intercept-url pattern="/*" access="IS_AUTHENTICATED_ANONYMOUSLY" />		
+		<form-login login-page="/account/login" default-target-url="/admin/list" 
+			authentication-failure-url="/account/fail"  />
 	</http>
 	
 	<authentication-manager>

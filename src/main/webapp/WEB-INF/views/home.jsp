@@ -61,7 +61,6 @@
 							</p>					
 							<p>${product.name}</p>
 							<p>Price: $${product.price}</p>
-							<p><a href="${pageContext.request.contextPath}/edit/${product.id}">[edit]</a></p>
 						</div>
 						<div class="buttons">
 							<div>
@@ -76,10 +75,6 @@
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>
-		
-		<div>
-			<a href="${pageContext.request.contextPath}/edit">add new product</a>
-		</div>
 	</div>
 </body>
 </html>
