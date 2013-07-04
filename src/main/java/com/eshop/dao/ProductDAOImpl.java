@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -47,6 +48,14 @@ public class ProductDAOImpl implements ProductDAO {
 		}
 		
 		return products;
+	}
+	
+	public int getTotalRowsCount() {
+		Session session = sessionFactory.getCurrentSession();
+		
+		return (Integer) session.createCriteria(Product.class)
+				.setProjection(Projections.rowCount())
+				.uniqueResult();
 	}
 
 	public Product get(Integer id) {		

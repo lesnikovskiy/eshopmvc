@@ -79,6 +79,9 @@
 					<tr>
 						<td colspan="5" align="right">
 							<a href="${pageContext.request.contextPath}/admin/list/${prev}">&lt;&lt; prev</a>
+							<c:forEach items="${total}" var="pageNumber">
+								<a href="${pageContext.request.contextPath}/admin/list/${pageNumber}">page</a>
+							</c:forEach>
 							<a href="${pageContext.request.contextPath}/admin/list/${next}">next &gt;&gt;</a>
 						</td>
 					</tr>

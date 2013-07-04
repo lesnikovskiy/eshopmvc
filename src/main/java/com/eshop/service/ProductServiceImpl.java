@@ -1,5 +1,6 @@
 package com.eshop.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eshop.dao.ProductDAO;
 import com.eshop.domain.Product;
-import com.eshop.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -23,6 +23,13 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public List<Product> list(int pageNumber, int pageSize) {
 		return productDAO.list(pageNumber, pageSize);
+	}
+	
+	@Transactional
+	public int getTotalPages(int pageSize) {
+		int totalRows = productDAO.getTotalRowsCount();
+		
+		return (int) Math.ceil(totalRows/pageSize);
 	}
 
 	@Transactional

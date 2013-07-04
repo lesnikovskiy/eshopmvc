@@ -3,6 +3,7 @@ package com.eshop.controllers;
 import java.io.IOException;
 import java.security.Principal;
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ import com.eshop.service.ProductService;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+	private static final int PAGE_SIZE = 2;
+	
 	@Autowired
 	private ProductService productService;
 	@Autowired
@@ -41,12 +44,19 @@ public class AdminController {
 	@RequestMapping("/list/{pageNumber}")
 	public String paginationList(@PathVariable("pageNumber") Integer pageNumber, 
 			Map<String, Object> map, Principal principal) {		
-		List<Product> products = productService.list(pageNumber, 2);
+		List<Product> products = productService.list(pageNumber, PAGE_SIZE);
+		int totalPages = productService.getTotalPages(PAGE_SIZE);
+		
+		List<Integer> pages = new ArrayList<Integer>();
+		for (int i = 1; i < totalPages + 1; i++) {
+			pages.add(i);
+		}
 		
 		map.put("products", products);
 		map.put("principal", principal);
 		map.put("prev", pageNumber - 1 <= 0 ? 1 : pageNumber - 1);
-		map.put("next", pageNumber + 1);
+		map.put("next", (pageNumber + 1) > totalPages ? 1 : pageNumber + 1);
+		map.put("total", pages);
 		
 		return "list";
 	}
