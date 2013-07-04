@@ -18,3 +18,27 @@ CREATE TABLE products (
 	categoryid int not null, 
 	foreign key (categoryid) references categories (id)
 );
+
+-- create users
+CREATE TABLE `users` (
+	`user_id` INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	`username` VARCHAR(45) NOT NULL,
+	`password` VARCHAR(45) NOT NULL,
+	`enabled` TINYINT(1) NOT NULL
+);
+
+CREATE UNIQUE INDEX `unique_user` ON `users` (`username`);
+
+CREATE TABLE `user_roles` (
+	`user_role_id` INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	`user_id` INT(10) NOT NULL,
+	`authority` VARCHAR(45) NOT NULL,
+	KEY `FK_USER_ROLES` (`user_id`),
+	CONSTRAINT `FK_USER_ROLES` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+);
+
+INSERT INTO users (username, password, enabled) VALUES ('admin', 'test', TRUE);
+INSERT INTO users (username, password, enabled) VALUES ('root', 'ruslan', TRUE);
+
+INSERT INTO user_roles(user_id, authority) SELECT user_id, 'ROLE_USER' from users WHERE username = 'admin';
+INSERT INTO user_roles(user_id, authority) SELECT user_id, 'ROLE_USER' from users WHERE username = 'root';

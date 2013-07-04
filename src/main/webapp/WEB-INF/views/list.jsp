@@ -5,6 +5,9 @@
 	<title>Home</title>
 	<style>
 		.page { width: 713px; margin: 0 auto; font:14px Arial; color:#333; }
+		.page .header { float:left; width:500px; }
+		.page .aside { float:right; }
+		.page .clear { clear:both; }
 		.page table {border-collapse:collapse; margin:0; padding:0; width:100%; border:0; font:14px Arial; }
 		.page table th, td { border-bottom:1px solid #333; padding:10px 25px; vertical-align: top; }
 		.page .control { 
@@ -20,12 +23,19 @@
 			margin-right:3px;
 		}
 		
-		.clear { clear:both; }
 	</style>
 </head>
 <body>
 	<div class="page">
-		<h3>Product List</h3>
+		<div>
+			<div class="header">
+				<h3>Product List</h3>
+			</div>
+			<div class="asside">
+				Current user: <strong>${principal.name}</strong>
+			</div>
+			<div class="clear"></div>		
+		</div>
 		
 		<c:choose>
 			<c:when test="${empty products}">
@@ -66,6 +76,12 @@
 							</td>
 						</tr>
 					</c:forEach>
+					<tr>
+						<td colspan="5" align="right">
+							<a href="${pageContext.request.contextPath}/admin/list/${prev}">&lt;&lt; prev</a>
+							<a href="${pageContext.request.contextPath}/admin/list/${next}">next &gt;&gt;</a>
+						</td>
+					</tr>
 				</table>
 			</c:otherwise>
 		</c:choose>

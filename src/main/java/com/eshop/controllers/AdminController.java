@@ -1,6 +1,7 @@
 package com.eshop.controllers;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.sql.Blob;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +31,24 @@ public class AdminController {
 	private CategoryService categoryService;
 	
 	@RequestMapping("/list")
-	public String list(Map<String, Object> map) {
+	public String list(Map<String, Object> map, Principal principal) {
 		map.put("products", productService.list());
+		map.put("principal", principal);
 		
 		return "list";			
+	}
+	
+	@RequestMapping("/list/{pageNumber}")
+	public String paginationList(@PathVariable("pageNumber") Integer pageNumber, 
+			Map<String, Object> map, Principal principal) {		
+		List<Product> products = productService.list(pageNumber, 2);
+		
+		map.put("products", products);
+		map.put("principal", principal);
+		map.put("prev", pageNumber - 1 <= 0 ? 1 : pageNumber - 1);
+		map.put("next", pageNumber + 1);
+		
+		return "list";
 	}
 	
 	@RequestMapping("/edit")

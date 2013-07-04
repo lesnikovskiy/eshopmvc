@@ -14,11 +14,23 @@
 			authentication-failure-url="/account/fail"  />
 	</http>
 	
+	<beans:bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<beans:property name="url" value="jdbc:mysql://localhost:3306/test"/>
+		<beans:property name="username" value="root"/>
+		<beans:property name="password" value="ruslan"/>
+	</beans:bean>
+		
 	<authentication-manager>
 		<authentication-provider>
-			<user-service>
-				<user name="root" password="ruslan" authorities="ROLE_USER"/>
-			</user-service>
+<!--            to store user data in config example -->
+<!-- 			<user-service> -->
+<!-- 				<user name="root" password="ruslan" authorities="ROLE_USER"/> -->
+<!-- 			</user-service> -->
+			<jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="select username, password, enabled from users where username=?"
+				authorities-by-username-query="select u.username, ur.authority from users u, user_roles ur where u.user_id = ur.user_id and u.username=?"/>
 		</authentication-provider>
 	</authentication-manager>
 	

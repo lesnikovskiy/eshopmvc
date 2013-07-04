@@ -19,6 +19,11 @@ public class ProductServiceImpl implements ProductService {
 	public List<Product> list() {
 		return productDAO.list();
 	}
+	
+	@Transactional
+	public List<Product> list(int pageNumber, int pageSize) {
+		return productDAO.list(pageNumber, pageSize);
+	}
 
 	@Transactional
 	public Product get(Integer id) {
