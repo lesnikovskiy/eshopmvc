@@ -3,7 +3,7 @@ package com.eshop.domain;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class CartLine {
+public final class CartLine {
 	private Product product;
 	private int quantity;
 	

@@ -3,7 +3,6 @@ package com.eshop.controllers;
 import java.io.IOException;
 import java.security.Principal;
 import java.sql.Blob;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.eshop.domain.Category;
+import com.eshop.domain.Paging;
 import com.eshop.domain.Product;
 import com.eshop.service.CategoryService;
+import com.eshop.service.PagingService;
 import com.eshop.service.ProductService;
 
 @Controller
@@ -32,6 +33,8 @@ public class AdminController {
 	private ProductService productService;
 	@Autowired
 	private CategoryService categoryService;
+	@Autowired
+	private PagingService pagingService;
 	
 	@RequestMapping("/list")
 	public String list(Map<String, Object> map, Principal principal) {
@@ -45,18 +48,11 @@ public class AdminController {
 	public String paginationList(@PathVariable("pageNumber") Integer pageNumber, 
 			Map<String, Object> map, Principal principal) {		
 		List<Product> products = productService.list(pageNumber, PAGE_SIZE);
-		int totalPages = productService.getTotalPages(PAGE_SIZE);
-		
-		List<Integer> pages = new ArrayList<Integer>();
-		for (int i = 1; i < totalPages + 1; i++) {
-			pages.add(i);
-		}
+		Paging paging = pagingService.getPaging(pageNumber, PAGE_SIZE);
 		
 		map.put("products", products);
 		map.put("principal", principal);
-		map.put("prev", pageNumber - 1 <= 0 ? 1 : pageNumber - 1);
-		map.put("next", (pageNumber + 1) > totalPages ? 1 : pageNumber + 1);
-		map.put("total", pages);
+		map.put("paging", paging);
 		
 		return "list";
 	}
