@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +41,8 @@ public class ProductDAOImpl implements ProductDAO {
 			Criteria criteria = session.createCriteria(Product.class);
 			//criteria.add(Restrictions.eq("isdeleted", "0"));
 			criteria.setFirstResult((pageNumber - 1) * pageSize);
-			criteria.setMaxResults(pageSize);		
+			criteria.setMaxResults(pageSize);
+			criteria.add(Restrictions.ne("isdeleted", true));
 			
 			products = criteria.list();
 		} catch (HibernateException e) {
