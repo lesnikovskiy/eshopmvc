@@ -90,4 +90,30 @@ public class HomeController {
 		
 		return "cart";
 	}
+	
+	@RequestMapping(value = "/increment", method = RequestMethod.POST)
+	public String increment(@RequestParam("productName") String productName, 
+			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {
+		shoppingCart.increment(productName);
+		
+		return "redirect:/cart";
+	}
+	
+	@RequestMapping(value = "/decrement", method = RequestMethod.POST)
+	public String decrement(@RequestParam("productName") String productName, 
+			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {
+		shoppingCart.decrement(productName);
+		
+		return "redirect:/cart";
+	}
+	
+	@RequestMapping(value = "/removeFromCart", method = RequestMethod.POST)
+	public String removeFromCart(@RequestParam("productName") String productName, 
+			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {
+		CartLine line = shoppingCart.find(productName);
+		if (line != null) 
+			shoppingCart.remove(line);
+		
+		return "redirect:/cart";
+	}
 }
