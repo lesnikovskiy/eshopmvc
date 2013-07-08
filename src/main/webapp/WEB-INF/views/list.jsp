@@ -23,6 +23,8 @@
 			margin-right:3px;
 		}
 		
+		a.selected { font:bold 14px Arial; }
+		
 	</style>
 </head>
 <body>
@@ -81,7 +83,15 @@
 							<td colspan="5" align="right">
 								<a href="${pageContext.request.contextPath}/admin/list/${paging.prevPage}">&lt;&lt; prev</a>
 								<c:forEach var="pageNum" items="${paging.pages}">
-									<a href="${pageContext.request.contextPath}/admin/list/${pageNum}">${pageNum}</a>
+									<c:choose>
+										<c:when test="${pageNumber == pageNum}">
+											<a class="selected" href="${pageContext.request.contextPath}/admin/list/${pageNum}">${pageNum}</a>
+										</c:when>
+										<c:otherwise>
+											<a href="${pageContext.request.contextPath}/admin/list/${pageNum}">${pageNum}</a>
+										</c:otherwise>
+									</c:choose>
+									
 								</c:forEach>
 								<a href="${pageContext.request.contextPath}/admin/list/${paging.nextPage}">next &gt;&gt;</a>
 							</td>
