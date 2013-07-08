@@ -35,7 +35,7 @@ public class Product {
 	private Blob file;
 	
 	@Column(name="isdeleted")
-	private boolean isDeleted;
+	private boolean isdeleted;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="categoryid")
@@ -82,11 +82,11 @@ public class Product {
 	}
 
 	public boolean isDeleted() {
-		return isDeleted;
+		return isdeleted;
 	}
 
 	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
+		this.isdeleted = isDeleted;
 	}
 
 	public Category getCategory() {

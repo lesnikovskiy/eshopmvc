@@ -3,6 +3,7 @@ package com.eshop.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -38,8 +39,7 @@ public class ProductDAOImpl implements ProductDAO {
 		List<Product> products = null;
 		
 		try {
-			Criteria criteria = session.createCriteria(Product.class);
-			//criteria.add(Restrictions.eq("isdeleted", "0"));
+			Criteria criteria = session.createCriteria(Product.class).setFetchMode("products", FetchMode.JOIN);
 			criteria.setFirstResult((pageNumber - 1) * pageSize);
 			criteria.setMaxResults(pageSize);
 			criteria.add(Restrictions.ne("isdeleted", true));
@@ -56,6 +56,7 @@ public class ProductDAOImpl implements ProductDAO {
 		Session session = sessionFactory.getCurrentSession();
 		
 		return (Integer) session.createCriteria(Product.class)
+				.add(Restrictions.ne("isdeleted", true))
 				.setProjection(Projections.rowCount())
 				.uniqueResult();
 	}
