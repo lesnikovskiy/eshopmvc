@@ -77,13 +77,15 @@
 						</tr>
 					</c:forEach>
 					<tr>
-						<td colspan="5" align="right">
-							<a href="${pageContext.request.contextPath}/admin/list/${paging.prevPage}">&lt;&lt; prev</a>
-							<c:forEach var="pageNum" items="${paging.pages}">
-								<a href="${pageContext.request.contextPath}/admin/list/${pageNum}">${pageNum}</a>
-							</c:forEach>
-							<a href="${pageContext.request.contextPath}/admin/list/${paging.nextPage}">next &gt;&gt;</a>
-						</td>
+						<c:if test="${paging.pagerVisible}">
+							<td colspan="5" align="right">
+								<a href="${pageContext.request.contextPath}/admin/list/${paging.prevPage}">&lt;&lt; prev</a>
+								<c:forEach var="pageNum" items="${paging.pages}">
+									<a href="${pageContext.request.contextPath}/admin/list/${pageNum}">${pageNum}</a>
+								</c:forEach>
+								<a href="${pageContext.request.contextPath}/admin/list/${paging.nextPage}">next &gt;&gt;</a>
+							</td>
+						</c:if>					
 					</tr>
 				</table>
 			</c:otherwise>

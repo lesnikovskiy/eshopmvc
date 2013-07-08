@@ -20,8 +20,8 @@ public final class Paging {
 	public void setPageNumber(int pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-	public int getPrevPage() {
-		int prev = getPageNumber() - 1;
+	public int getPrevPage() {		
+		int prev = getPageNumber() - 1;		
 		
 		return prev <= 0 ? 1 : prev;
 	}
@@ -49,5 +49,9 @@ public final class Paging {
 		}
 		
 		return pages;
+	}
+	
+	public boolean isPagerVisible() {
+		return this.getTotalPages() > 1;
 	}
 }
