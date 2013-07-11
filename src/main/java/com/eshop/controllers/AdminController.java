@@ -6,6 +6,8 @@ import java.sql.Blob;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,11 +39,8 @@ public class AdminController {
 	private PagingService pagingService;
 	
 	@RequestMapping("/list")
-	public String list(Map<String, Object> map, Principal principal) {
-		map.put("products", productService.list());
-		map.put("principal", principal);
-		
-		return "list";			
+	public String list() {			
+		return "redirect:/admin/list/1";			
 	}
 	
 	@RequestMapping("/list/{pageNumber}")
@@ -57,17 +56,20 @@ public class AdminController {
 		return "list";
 	}
 	
-	@RequestMapping("/edit")
-	public String edit(Map<String, Object> map) {
+	@RequestMapping("/edit/{pageNumber}")
+	public String edit(@PathVariable("pageNumber") Integer pageNumber, Map<String, Object> map) {	
 		map.put("product", new Product());
 		map.put("categories", categoryService.list());
 		map.put("action", "save");
+		map.put("pageNumber", pageNumber);
+		
 		
 		return "edit";
 	}
 	
-	@RequestMapping("/edit/{productId}")
+	@RequestMapping("/edit/{productId}/{pageNumber}")
 	public String editProduct(@PathVariable("productId") Integer productId, 
+			@PathVariable("pageNumber") Integer pageNumber,
 			Map<String, Object> map) {
 		Product product = productService.get(productId);
 		List<Category> categories = categoryService.list();
@@ -81,13 +83,16 @@ public class AdminController {
 		map.put("product", product);
 		map.put("categories", categories);
 		map.put("action", "update");
+		map.put("pageNumber", pageNumber);
 		
 		return "edit";
 	}
 	
 	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public String save(@ModelAttribute("product") Product product, BindingResult result, 
-			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {		
+			@RequestParam("file") MultipartFile file, 
+			@RequestParam("category") Integer categoryId,
+			@RequestParam("pageNumber") Integer pageNumber) {		
 		Product p = initProduct(product, file, categoryId);
 		
 		try {
@@ -96,12 +101,14 @@ public class AdminController {
 			e.printStackTrace();
 		}
 		
-		return "redirect:/admin/list";
+		return "redirect:/admin/list/" + pageNumber;
 	}	
 	
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("product") Product product, BindingResult result,
-			@RequestParam("file") MultipartFile file, @RequestParam("category") Integer categoryId) {
+			@RequestParam("file") MultipartFile file, 
+			@RequestParam("category") Integer categoryId,
+			@RequestParam("pageNumber") Integer pageNumber) {
 		Product p = initProduct(product, file, categoryId);
 		
 		try {
@@ -110,14 +117,14 @@ public class AdminController {
 			e.printStackTrace();
 		}
 		
-		return "redirect:/admin/list";
+		return "redirect:/admin/list/" + pageNumber;
 	}
 	
 	@RequestMapping(value="/remove", method = RequestMethod.POST)
-	public String remove(@RequestParam("productId") Integer productId) {
+	public String remove(@RequestParam("productId") Integer productId, @RequestParam("pageNumber") Integer pageNumber) {
 		productService.delete(productId);
 		
-		return "redirect:/admin/list";
+		return "redirect:/admin/list/" + pageNumber;
 	}
 	
 	private Product initProduct(Product product, MultipartFile file, Integer categoryId) {

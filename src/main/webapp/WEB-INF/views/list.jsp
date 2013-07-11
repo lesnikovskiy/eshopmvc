@@ -68,11 +68,12 @@
 							<td>$${product.price}</td>
 							<td>${product.category.name}</td>
 							<td>
-								<form action="${pageContext.request.contextPath}/admin/edit/${product.id}">
+								<form action="${pageContext.request.contextPath}/admin/edit/${product.id}/${pageNumber}">
 									<input type="submit" value="edit" class="control" />
 								</form>
-								<form action="${pageContext.request.contextPath}/admin/remove" method="post">
+								<form action="${pageContext.request.contextPath}/admin/remove/${pageNumber}" method="post">
 									<input type="hidden" name="productId" value="${product.id}" />
+									<input type="hidden" name="pageNumber" value="${pageNumber}" />
 									<input type="submit" value="delete" class="control" />
 								</form>
 							</td>
@@ -102,7 +103,7 @@
 		</c:choose>
 		
 		<div>
-			<form action="${pageContext.request.contextPath}/admin/edit">
+			<form action="${pageContext.request.contextPath}/admin/edit/${pageNumber}">
 				<input type="submit" value="add product" class="control" />
 			</form>
 			<form action="<c:url value='/j_spring_security_logout' />">
