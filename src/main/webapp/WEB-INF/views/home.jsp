@@ -18,7 +18,8 @@
 			font:bold 12px Arial;
 			display: block; float: right;
 		}
-		.clear { clear:both; }
+		.page .clear { clear:both; }
+		.page a.selected { font:bold 14px Arial; }
 	</style>
 </head>
 <body>
@@ -73,6 +74,20 @@
 						<div class="clear"></div>
 					</div>
 				</c:forEach>
+				<div>
+					<a href="${pageContext.request.contextPath}/index/${paging.prevPage}">&lt;&lt; prev</a>
+					<c:forEach var="page" items="${paging.pages}">
+						<c:choose>
+							<c:when test="${pageNumber == page}">
+								<a class="selected" href="${pageContext.request.contextPath}/index/${page}">${page}</a>
+							</c:when>
+							<c:otherwise>
+								<a href="${pageContext.request.contextPath}/index/${page}">${page}</a>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					<a href="${pageContext.request.contextPath}/index/${paging.nextPage}">next &gt;&gt;</a>
+				</div>
 			</c:otherwise>
 		</c:choose>
 	</div>

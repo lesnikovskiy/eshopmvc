@@ -3,6 +3,7 @@ package com.eshop.controllers;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,16 +19,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.eshop.domain.CartLine;
+import com.eshop.domain.Paging;
 import com.eshop.domain.Product;
 import com.eshop.domain.ShoppingCart;
+import com.eshop.service.PagingService;
 import com.eshop.service.ProductService;
 
 @Controller
 @RequestMapping("/")
 @SessionAttributes("shoppingCart")
 public class HomeController {
+	static final private int PAGE_SIZE = 2;
+	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private PagingService pagingService;
 	
 	@ModelAttribute("shoppingCart")
 	public ShoppingCart initShoppingCart() {
@@ -35,13 +43,24 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/")
-	public String main() {
-		return "redirect:/index";
+	public String root() {
+		return "redirect:/index/1";
 	}
 	
-	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String home(Map<String, Object> map, @ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {			
-		map.put("products", productService.list());
+	@RequestMapping("/index")
+	public String index() {
+		return "redirect:/index/1";
+	}
+	
+	@RequestMapping(value = "/index/{pageNumber}", method = RequestMethod.GET)
+	public String home(@PathVariable("pageNumber") Integer pageNumber, 
+			Map<String, Object> map, 
+			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart) {	
+		List<Product> products = productService.list(pageNumber, PAGE_SIZE); 
+		Paging paging = pagingService.getPaging(pageNumber, PAGE_SIZE);
+		
+		map.put("products", products);
+		map.put("paging", paging);
 		map.put("shoppingCart",  shoppingCart != null ? shoppingCart : initShoppingCart());
 		
 		return "home";

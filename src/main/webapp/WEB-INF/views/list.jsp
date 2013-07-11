@@ -91,8 +91,7 @@
 										<c:otherwise>
 											<a href="${pageContext.request.contextPath}/admin/list/${pageNum}">${pageNum}</a>
 										</c:otherwise>
-									</c:choose>
-									
+									</c:choose>									
 								</c:forEach>
 								<a href="${pageContext.request.contextPath}/admin/list/${paging.nextPage}">next &gt;&gt;</a>
 							</td>
