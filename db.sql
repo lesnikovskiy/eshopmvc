@@ -42,3 +42,29 @@ INSERT INTO users (username, password, enabled) VALUES ('root', 'ruslan', TRUE);
 
 INSERT INTO user_roles(user_id, authority) SELECT user_id, 'ROLE_USER' from users WHERE username = 'admin';
 INSERT INTO user_roles(user_id, authority) SELECT user_id, 'ROLE_USER' from users WHERE username = 'root';
+
+CREATE TABLE `orders` (
+	`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	`firstname` VARCHAR(50) NOT NULL,
+	`middlename` VARCHAR(50) NULL,
+	`lastname` VARCHAR(50) NOT NULL,
+	`email` VARCHAR(150) NULL,
+	`phone` VARCHAR(50) NOT NULL,
+	`address1` VARCHAR(250) NOT NULL,
+	`address2` VARCHAR(250) NULL,
+	`zipcode` VARCHAR(50) NOT NULL,
+	`comment` VARCHAR(500) NOT NULL,
+	`isdeleted` BIT NOT NULL
+);
+
+CREATE UNIQUE INDEX `unique_email` ON `orders` (`email`);
+
+CREATE TABLE `orders_products` (
+	`order_id` INT NOT NULL,
+	`product_id` INT NOT NULL,
+	PRIMARY KEY(`order_id`, `product_id`),
+	KEY `FK_orders_orders` (`order_id`),
+	CONSTRAINT `FK_orders_orders` FOREIGN KEY(`order_id`) REFERENCES `orders`(`id`),
+	KEY `FK_orders_products`(`product_id`),
+	CONSTRAINT `FK_orders_products` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+);

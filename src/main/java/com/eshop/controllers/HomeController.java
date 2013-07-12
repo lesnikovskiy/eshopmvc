@@ -3,14 +3,17 @@ package com.eshop.controllers;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.eshop.domain.CartLine;
+import com.eshop.domain.Order;
 import com.eshop.domain.Paging;
 import com.eshop.domain.Product;
 import com.eshop.domain.ShoppingCart;
+import com.eshop.service.OrderService;
 import com.eshop.service.PagingService;
 import com.eshop.service.ProductService;
 
@@ -32,10 +37,11 @@ public class HomeController {
 	static final private int PAGE_SIZE = 2;
 	
 	@Autowired
-	private ProductService productService;
-	
+	private ProductService productService;	
 	@Autowired
 	private PagingService pagingService;
+	@Autowired
+	private OrderService orderService;
 	
 	@ModelAttribute("shoppingCart")
 	public ShoppingCart initShoppingCart() {
@@ -134,5 +140,30 @@ public class HomeController {
 			shoppingCart.remove(line);
 		
 		return "redirect:/cart";
+	}
+	
+	@RequestMapping("/checkout")
+	public String checkout(Map<String, Object> map) {
+		map.put("order", new Order());
+		
+		return "checkout";
+	}
+	
+	@RequestMapping(value = "/checkout", method = RequestMethod.POST)
+	public String processOrder(@ModelAttribute("order") Order order, 
+			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart,
+			BindingResult result) {
+		
+		if (!result.hasErrors()) {
+			Set<Product> products = new HashSet<Product>();
+			for(CartLine c : shoppingCart.getCartLines()) {
+				products.add(c.getProduct());
+			}
+			
+			order.setProducts(products);
+			orderService.save(order);
+		}
+		
+		return "redirect:/index/1";
 	}
 }
