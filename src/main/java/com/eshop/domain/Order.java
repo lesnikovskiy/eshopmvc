@@ -2,8 +2,10 @@ package com.eshop.domain;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -47,8 +49,9 @@ public class Order {
 	@Column(name="comment")
 	private String comment;
 	
-	@Transient
-	@OneToMany
+	@OneToMany(targetEntity=Order.class, 
+		cascade = CascadeType.ALL,
+		fetch = FetchType.LAZY)
 	@JoinTable(
 			name="orders_products", 
 			joinColumns = @JoinColumn(name="order_id"), 

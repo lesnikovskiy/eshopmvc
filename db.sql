@@ -59,9 +59,12 @@ CREATE TABLE `orders` (
 
 CREATE UNIQUE INDEX `unique_email` ON `orders` (`email`);
 
-CREATE TABLE `orders_products` (
+CREATE TABLE `orderlines` (
 	`order_id` INT NOT NULL,
 	`product_id` INT NOT NULL,
+	`quantity` INT NOT NULL,
+	`product_price` DECIMAL(19,2) NOT NULL,
+	`total_price` DECIMAL(19,2) NOT NULL,
 	PRIMARY KEY(`order_id`, `product_id`),
 	KEY `FK_orders_orders` (`order_id`),
 	CONSTRAINT `FK_orders_orders` FOREIGN KEY(`order_id`) REFERENCES `orders`(`id`),
