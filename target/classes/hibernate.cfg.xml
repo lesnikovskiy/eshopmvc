@@ -8,5 +8,6 @@
  		<mapping class="com.eshop.domain.Category" />
  		<mapping class="com.eshop.domain.Product" />
  		<mapping class="com.eshop.domain.Order" />
+ 		<mapping class="com.eshop.domain.OrderLine" />
  	</session-factory>
  </hibernate-configuration>

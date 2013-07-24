@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.eshop.domain.CartLine;
 import com.eshop.domain.Order;
+import com.eshop.domain.OrderLine;
 import com.eshop.domain.Paging;
 import com.eshop.domain.Product;
 import com.eshop.domain.ShoppingCart;
@@ -154,13 +155,18 @@ public class HomeController {
 			@ModelAttribute("shoppingCart") ShoppingCart shoppingCart,
 			BindingResult result) {
 		
-		if (!result.hasErrors()) {
-			Set<Product> products = new HashSet<Product>();
+		if (!result.hasErrors()) {			
+			Set<OrderLine> orderLines = new HashSet<OrderLine>();
 			for(CartLine c : shoppingCart.getCartLines()) {
-				products.add(c.getProduct());
+				OrderLine line = new OrderLine();
+				line.setOrder(order);
+				line.setProduct(c.getProduct());
+				line.setProductPrice(c.getProduct().getPrice());
+				line.setTotalPrice(c.getPrice());
+				
+				orderLines.add(line);
 			}
 			
-			order.setProducts(products);
 			orderService.save(order);
 		}
 		

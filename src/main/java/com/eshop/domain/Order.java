@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name="orders")
@@ -49,15 +48,15 @@ public class Order {
 	@Column(name="comment")
 	private String comment;
 	
-	@OneToMany(targetEntity=Order.class, 
+	@OneToMany(targetEntity=OrderLine.class, 
 		cascade = CascadeType.ALL,
 		fetch = FetchType.LAZY)
 	@JoinTable(
-			name="orders_products", 
-			joinColumns = @JoinColumn(name="order_id"), 
-			inverseJoinColumns=@JoinColumn(name="product_id")
+			name="orderlines", 
+			joinColumns = {@JoinColumn(table = "orderlines", name="FK_orders_orders", referencedColumnName = "order_id")}, 
+			inverseJoinColumns={@JoinColumn(table = "orders", name="FK_orders_orders", referencedColumnName = "id")}
 			) 
-	private Set<Product> products;
+	private Set<OrderLine> orderLines;
 
 	public int getId() {
 		return id;
@@ -142,12 +141,12 @@ public class Order {
 		this.comment = comment;
 	}
 
-	public Set<Product> getProducts() {
-		return products;
+	public Set<OrderLine> getOrderLines() {
+		return orderLines;
 	}
 
-	public void setProducts(Set<Product> products) {
-		this.products = products;
+	public void setProducts(Set<OrderLine> orderLines) {
+		this.orderLines = orderLines;
 	}
 
 	public boolean isIsdeleted() {
